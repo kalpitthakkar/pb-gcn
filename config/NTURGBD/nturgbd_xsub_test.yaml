@@ -1,0 +1,26 @@
+# loader
+loader: NTULoader
+test_loader_args:
+  split_dir: /ssd_scratch/cvit/kalpit.t/stgcn/data/xsub
+
+# model
+model: ST_GCONV_RESNET
+model_args:
+  layers_config: [(64, 64, 1), (64, 64, 1), (64, 64, 1), (64, 128, 2), (128, 128, 1), 
+      (128, 128, 1), (128, 256, 2), (256, 256, 1), (256, 256, 1)]
+  num_class: 60
+  channel: 3
+  window_size: 300
+  num_point: 25
+  num_person: 2
+  graph: NTURGBD
+  graph_args:
+    labeling_mode: 'parts'
+  mask_learning: True
+  use_data_bn: True
+
+# testing
+device: 0
+test_batch_size: 64
+weights: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/xsub/model/ntuxsub.pt
+

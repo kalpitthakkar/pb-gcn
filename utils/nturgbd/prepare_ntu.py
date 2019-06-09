@@ -68,7 +68,8 @@ def gendata(data_path,
         mode='w+',
         shape=(len(sample_label), 3, max_frame, num_joint, max_body))
 
-    for i, s in tqdm(enumerate(sample_name)):
+    for i in tqdm(range(len(sample_name))):
+        s = sample_name[i]
         data = read_xyz(
             os.path.join(data_path, s), max_body=max_body, num_joint=num_joint)
         fp[i, :, 0:data.shape[1], :, :] = data

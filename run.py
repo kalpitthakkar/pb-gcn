@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import os
+import os, glob
 import time
 import numpy as np
 import yaml
@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
 from utils import Parser, Timer
-from utils.nturgb+d import gendata as ntu_gendata
+from utils.nturgbd import gendata as ntu_gendata
 import data
 import models
 
@@ -321,40 +321,41 @@ if __name__ == '__main__':
     elif 'NTU' in args.dataset:
         # Prepare training data if it is not already present
         train_data_check = glob.glob(os.path.join(
-            args.train_loader_args.split_dir,
+            args.train_loader_args['split_dir'],
             'train_*')
         )
+        print(train_data_check)
         if not (len(train_data_check) == 2):
-            topdir, benchmark = os.path.split(args.train_loader_args.split_dir)
+            topdir, benchmark = os.path.split(args.train_loader_args['split_dir'])
             part = 'train'
-            if not os.path.exists(args.train_loader_args.split_dir):
-                os.makedirs(args.train_loader_args.split_dir)
+            if not os.path.exists(args.train_loader_args['split_dir']):
+                os.makedirs(args.train_loader_args['split_dir'])
             ntu_gendata(
                 args.data_path,
-                args.train_loader_args.split_dir,
-                os.path.join(topdir, 'samples_with_missing_skeletons.txt'),
+                args.train_loader_args['split_dir'],
+                args.missing_txt,
                 benchmark=benchmark,
                 part=part
             )
 
         # Prepare testing data if it is not already present
         test_data_check = glob.glob(os.path.join(
-            args.test_loader_args.split_dir,
+            args.test_loader_args['split_dir'],
             'val_*')
         )
         if not (len(test_data_check) == 2):
-            topdir, benchmark = os.path.split(args.test_loader_args.split_dir)
+            topdir, benchmark = os.path.split(args.test_loader_args['split_dir'])
             part = 'val'
-            if not os.path.exists(args.test_loader_args.split_dir):
-                os.makedirs(args.test_loader_args.split_dir)
+            if not os.path.exists(args.test_loader_args['split_dir']):
+                os.makedirs(args.test_loader_args['split_dir'])
             ntu_gendata(
                 args.data_path,
-                args.test_loader_args.split_dir,
-                os.path.join(topdir, 'samples_with_missing_skeletons.txt'),
+                args.test_loader_args['split_dir'],
+                args.missing_txt,
                 benchmark=benchmark,
                 part=part
             )
 
         # Launch the training process
-        launcher = Runner(args)
-        launcher.run()
+        # launcher = Runner(args)
+        # launcher.run()

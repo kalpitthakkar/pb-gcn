@@ -26,6 +26,10 @@ class Parser(object):
             default='./nturgb+d_skeletons',
             help='The path to folder containing the .skeleton files from dataset')
         self.parser.add_argument(
+            '--missing-txt',
+            default='./samples_with_missing_skeletons.txt',
+            help='The samples which contain erroneous skeletons')
+        self.parser.add_argument(
             '--config',
             default='./config/NTURGBD/nturgbd_xsub_train.yaml',
             help='Path to the configuration file')

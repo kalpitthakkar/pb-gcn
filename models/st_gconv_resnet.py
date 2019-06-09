@@ -5,9 +5,9 @@ from torch.autograd import Variable
 import numpy as np
 import math
 
-import graph as graf
-from utils import conv_init
-from st_residual_unit import STResidualUnit, STUnit
+from . import graph as graf
+from .utils import conv_init
+from .st_residual_unit import STResidualUnit, STUnit
 
 class STGraphConvResnet(nn.Module):
     """ Spatio-Temporal Graph Convolutional Residual Network
@@ -80,7 +80,7 @@ class STGraphConvResnet(nn.Module):
         conv_init(self.fcn)
 
     def forward(self, x):
- 
+
         N, C, T, V, M = x.size()
 
         # data bn
@@ -100,7 +100,7 @@ class STGraphConvResnet(nn.Module):
 
         # model
         x = self.head(x)
-        
+
         for layer in self.layers:
             x = layer(x)
 

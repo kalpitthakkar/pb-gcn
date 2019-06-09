@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from torch.utils.data.dataset import Dataset
 
 import utils
-import signals
+from . import signals
 
 class NTULoader(Dataset):
     """ Dataset loader class for the NTURGB+D dataset
@@ -63,6 +63,7 @@ class NTULoader(Dataset):
                 self.sample_name, self.labels = pickle.load(f)
         except Exception as e:
             print("The pickled file seems to be created with Python2.x: ", e)
+            print("Opening the file with 'rb' flags")
             with open(self.label_path, 'rb') as f:
                 self.sample_name, self.labels = pickle.load(f, encoding='latin1')
 

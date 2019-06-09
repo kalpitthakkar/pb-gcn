@@ -1,21 +1,21 @@
-work_dir: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/NTURGBD/xview/ST_GCN_yan_disps+relcoords_aug
+work_dir: /media/data_cifs/Kalpit/NTURGB+D/work_dir/xview/ST_GCN_parts_noaug
 
 # loader
 loader: NTULoader
 train_loader_args:
-  split_dir: /ssd_scratch/cvit/kalpit.t/stgcn/data/xview
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/xview
   signals:
     temporal_signal: True
     spatial_signal: True
     all_signal: False
-  transforms: ['RandomAffineTransformAcrossTime']
-  transform_args:
-    angle_choices: [-10., -5., 0, 5., 10.]
-    scale_choices: [0.9, 1.0, 1.1]
-    translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
-    tsmoothness_choices: [1]
+  #transforms: ['RandomAffineTransformAcrossTime']
+  #transform_args:
+  #  angle_choices: [-10., -5., 0, 5., 10.]
+  #  scale_choices: [0.9, 1.0, 1.1]
+  #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
+  #  tsmoothness_choices: [1]
 test_loader_args:
-  split_dir: /ssd_scratch/cvit/kalpit.t/stgcn/data/xview
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/xview
   is_training: False
   signals:
     temporal_signal: True
@@ -34,12 +34,12 @@ model_args:
   num_actors: 2
   graph: NTUGraph
   graph_args:
-    labeling_mode: 'spatial'
+    labeling_mode: 'parts'
   mask_learning: True
   use_data_bn: True
 
 # optim
-weight_decay: 0.0001
+weight_decay: 0.0005
 base_lr: 0.1
 step: [20, 50, 70]
 
@@ -55,5 +55,5 @@ save_interval: 5
 eval_interval: 5
 
 # initialize
-# start_epoch: 50
+# start_epoch: 5
 # weights: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/NTURGBD/xsub/ST_GCN_oldlabel_combined_signals/epoch50_model.pt

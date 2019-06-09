@@ -103,7 +103,7 @@ class HDM05Loader(Dataset):
             print("Error in loading the .npy file: ", e)
 
         if split_name == '10xsam':
-            # Perform the random sample split. Half from each class for training and 
+            # Perform the random sample split. Half from each class for training and
             # rest half from each class for testing.
             # Set the random state when creating test loader to be consistent with train.
             if random_state is not None:

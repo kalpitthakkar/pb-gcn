@@ -17,6 +17,7 @@ from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
 from utils import Parser, Timer
+from utils.nturgb+d import gendata as ntu_gendata
 import data
 import models
 
@@ -121,7 +122,6 @@ class Runner(object):
                 momentum=0.9,
                 nesterov=self.args.nesterov,
                 weight_decay=self.args.weight_decay)
-            optimor = optim.SGD
         elif self.args.optimizer == 'Adam':
             self.optimizer = optim.Adam(
                 self.model.parameters(),
@@ -183,14 +183,14 @@ class Runner(object):
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            loss_value.append(loss.data[0])
+            loss_value.append(loss.item())
             score_frag = output.data.cpu().numpy()
             label_frag = label.data.cpu().numpy()
             timer['model'] += timetracker.split_time()
 
             hit1 = self.top_k(score_frag, label_frag, 1)
             hit5 = self.top_k(score_frag, label_frag, 5)
-            loss_val = loss.data[0]
+            loss_val = loss.item()
 
             losses.update(loss_val, data[0].size(0))
             top1.update(hit1 * 100., data[0].size(0))
@@ -234,42 +234,41 @@ class Runner(object):
         self.print_log('Eval epoch: {}'.format(epoch + 1))
         loss_value = []
         score_frag = []
-        for batch_idx, (data, label) in enumerate(self.test_loader):
-            data = Variable(
-                data.float().cuda(self.output_device),
-                requires_grad=False,
-                volatile=True)
-            label = Variable(
-                label.long().cuda(self.output_device),
-                requires_grad=False,
-                volatile=True)
-            output = self.model(data)
-            loss = self.loss(output, label)
-            score_frag.append(output.data.cpu().numpy())
-            loss_value.append(loss.data[0])
-        score = np.concatenate(score_frag)
-        score_dict = dict(
-            zip(self.test_dataset.sample_name, score))
-        self.print_log('\tMean test loss of {} batches: {}.'.format(
-            len(self.test_loader), np.mean(loss_value)))
-        self.summary_writer.add_scalar('Test/AvgLoss', np.mean(loss_value), epoch)
-        for k in self.args.show_topk:
-            hit_val = self.top_k(score, self.test_dataset.labels, k)
-            self.summary_writer.add_scalar('Test/AvgTop'+str(k), hit_val, epoch)
-            self.print_log('\tTop{}: {:.2f}%'.format(
-                k, 100 * hit_val))
+        with torch.no_grad():
+            for batch_idx, (data, label) in enumerate(self.test_loader):
+                data = Variable(
+                    data.float().cuda(self.output_device),
+                    requires_grad=False)
+                label = Variable(
+                    label.long().cuda(self.output_device),
+                    requires_grad=False)
+                output = self.model(data)
+                loss = self.loss(output, label)
+                score_frag.append(output.data.cpu().numpy())
+                loss_value.append(loss.item())
+            score = np.concatenate(score_frag)
+            score_dict = dict(
+                zip(self.test_dataset.sample_name, score))
+            self.print_log('\tMean test loss of {} batches: {}.'.format(
+                len(self.test_loader), np.mean(loss_value)))
+            self.summary_writer.add_scalar('Test/AvgLoss', np.mean(loss_value), epoch)
+            for k in self.args.show_topk:
+                hit_val = self.top_k(score, self.test_dataset.labels, k)
+                self.summary_writer.add_scalar('Test/AvgTop'+str(k), hit_val, epoch)
+                self.print_log('\tTop{}: {:.2f}%'.format(
+                    k, 100 * hit_val))
 
-        if save_score:
-            with open('{}/epoch{}_{}_score.pkl'.format(
-                    self.args.work_dir, epoch + 1, 'test'), 'w') as f:
-                pickle.dump(score_dict, f)
+            if save_score:
+                with open('{}/epoch{}_{}_score.pkl'.format(
+                        self.args.work_dir, epoch + 1, 'test'), 'w') as f:
+                    pickle.dump(score_dict, f)
 
     def run(self):
         self.logdir = os.path.join(self.args.work_dir, 'runs')
         if not self.args.comment == '':
-            self.summary_writer = SummaryWriter(log_dir=self.logdir, comment='_'+self.args.comment)
+            self.summary_writer = SummaryWriter(logdir=self.logdir, comment='_'+self.args.comment)
         else:
-            self.summary_writer = SummaryWriter(log_dir=self.logdir)
+            self.summary_writer = SummaryWriter(logdir=self.logdir)
         if self.args.phase == 'train':
             self.print_log('Parameters:\n{}\n'.format(str(vars(self.args))))
             for epoch in range(self.args.start_epoch, self.args.num_epoch):
@@ -304,7 +303,7 @@ if __name__ == '__main__':
     pargs = p.parser.parse_args()
     if pargs.config is not None:
         with open(pargs.config, 'r') as f:
-            default_arg = yaml.load(f)
+            default_arg = yaml.load(f, Loader=yaml.FullLoader)
         key = vars(pargs).keys()
         for k in default_arg.keys():
             if k not in key:
@@ -314,10 +313,48 @@ if __name__ == '__main__':
 
     args = p.parser.parse_args()
     p.dump_args(args, args.work_dir)
+
     if 'HDM' in args.dataset:
         for i in range(10):
             launcher = Runner(args)
             launcher.run()
     elif 'NTU' in args.dataset:
+        # Prepare training data if it is not already present
+        train_data_check = glob.glob(os.path.join(
+            args.train_loader_args.split_dir,
+            'train_*')
+        )
+        if not (len(train_data_check) == 2):
+            topdir, benchmark = os.path.split(args.train_loader_args.split_dir)
+            part = 'train'
+            if not os.path.exists(args.train_loader_args.split_dir):
+                os.makedirs(args.train_loader_args.split_dir)
+            ntu_gendata(
+                args.data_path,
+                args.train_loader_args.split_dir,
+                os.path.join(topdir, 'samples_with_missing_skeletons.txt'),
+                benchmark=benchmark,
+                part=part
+            )
+
+        # Prepare testing data if it is not already present
+        test_data_check = glob.glob(os.path.join(
+            args.test_loader_args.split_dir,
+            'val_*')
+        )
+        if not (len(test_data_check) == 2):
+            topdir, benchmark = os.path.split(args.test_loader_args.split_dir)
+            part = 'val'
+            if not os.path.exists(args.test_loader_args.split_dir):
+                os.makedirs(args.test_loader_args.split_dir)
+            ntu_gendata(
+                args.data_path,
+                args.test_loader_args.split_dir,
+                os.path.join(topdir, 'samples_with_missing_skeletons.txt'),
+                benchmark=benchmark,
+                part=part
+            )
+
+        # Launch the training process
         launcher = Runner(args)
         launcher.run()

@@ -1,4 +1,4 @@
-from graph import Graph
+from .graph import Graph
 
 num_node = 25
 inward_ori_index = [(1, 2), (2, 21), (3, 21), (4, 3), (5, 21), (6, 5), (7, 6),

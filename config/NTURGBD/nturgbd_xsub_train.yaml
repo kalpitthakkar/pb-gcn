@@ -1,12 +1,13 @@
-work_dir: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/NTURGBD/xsub/ST_GCN_parts_noaug
+work_dir: /media/data_cifs/Kalpit/NTURGB+D/work_dir/ST_GCN_parts_noaug_2
+data_path: /media/ssd_storage/NTURGB+D/nturgb+d_skeletons
 
-# loader
+# Data Loader
 loader: NTULoader
 train_loader_args:
-  split_dir: /ssd_scratch/cvit/kalpit.t/stgcn/data/xsub
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/xsub
   signals:
-    temporal_signal: False
-    spatial_signal: False
+    temporal_signal: True
+    spatial_signal: True
     all_signal: False
   #transforms: ['RandomAffineTransformAcrossTime']
   #transform_args:
@@ -15,20 +16,20 @@ train_loader_args:
   #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
   #  tsmoothness_choices: [1]
 test_loader_args:
-  split_dir: /ssd_scratch/cvit/kalpit.t/stgcn/data/xsub
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/xsub
   is_training: False
   signals:
-    temporal_signal: False
-    spatial_signal: False
+    temporal_signal: True
+    spatial_signal: True
     all_signal: False
 
-# model
+# Model
 model: ST_GCONV_RESNET
 model_args:
   layers_config: [[64, 64, 1], [64, 64, 1], [64, 64, 1], [64, 128, 2], [128, 128, 1], 
       [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
   num_class: 60
-  channel: 3
+  channel: 15
   window_size: 300
   num_joints: 25
   num_actors: 2
@@ -38,22 +39,22 @@ model_args:
   mask_learning: True
   use_data_bn: True
 
-# optim
-weight_decay: 0.0001
+# Optimization
+weight_decay: 0.0005
 base_lr: 0.1
 step: [20, 50, 70]
 
-# training
-device: [0,1,2,3]
+# Training
+device: [4,5,6,7]
 batch_size: 64
 test_batch_size: 64
 num_epoch: 80
 nesterov: True
 save_interval: 5
 
-# eval
+# Evaluation
 eval_interval: 5
 
-# initialize
-# start_epoch: 50
+# Initialization from checkpoint
+# start_epoch: 5
 # weights: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/NTURGBD/xsub/ST_GCN_oldlabel_combined_signals/epoch50_model.pt

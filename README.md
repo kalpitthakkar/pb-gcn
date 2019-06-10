@@ -1,6 +1,6 @@
 # Part-based Graph Convolutional Network for Skeleton-based Action Recognition
 
-Official repository for the code from BMVC (British Machine Vision Conference) paper "[Part-based Graph Convolutional Network for Action Recognition](http://bmvc2018.org/contents/papers/1003.pdf)". The implementation is done in Pytorch. The repository includes:
+Official repository for the code from BMVC (British Machine Vision Conference) paper "[Part-based Graph Convolutional Network for Action Recognition](http://bmvc2018.org/contents/papers/1003.pdf)". The implementation is done in Pytorch and works on it's recent stable version. The repository includes:
 
 - [x] Code for the final model used in the paper.
 - [x] Model checkpoints for model trained on NTURGB+D Cross Subject and Cross View data splits.

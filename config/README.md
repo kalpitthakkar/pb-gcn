@@ -77,12 +77,6 @@ train_loader_args:
     temporal_signal: True
     spatial_signal: True
     all_signal: False
-  #transforms: ['RandomAffineTransformAcrossTime']
-  #transform_args:
-  #  angle_choices: [-10., -5., 0, 5., 10.]
-  #  scale_choices: [0.9, 1.0, 1.1]
-  #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
-  #  tsmoothness_choices: [1]
 test_loader_args:
   split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cs
   is_training: False
@@ -144,6 +138,8 @@ reduce the number of input channels.
 * The different ways of constructing the adjacency matrices (labeling mode)
 are given in `pb-gcn/models/graph/graph.py`. Change this file / add to this
 file for any new way of labeling the nodes.
+
+* For testing the model using saved / downloaded weights, use the test config files given.
 
 That's all. If there are any questions, please create an issue and we can
 take it up there!

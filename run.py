@@ -341,6 +341,7 @@ if __name__ == '__main__':
             args.test_loader_args['split_dir'],
             'val_*')
         )
+        print(test_data_check)
         if not (len(test_data_check) == 2):
             topdir, benchmark = os.path.split(args.test_loader_args['split_dir'])
             part = 'val'

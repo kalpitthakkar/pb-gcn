@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of parameters: Enter the path for saving weights"
+    exit 1
+fi
+
 out_dir=$1
 mkdir -p $1
 

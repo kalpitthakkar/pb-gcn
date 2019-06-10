@@ -1,0 +1,62 @@
+work_dir: /media/data_cifs/Kalpit/NTURGB+D/work_dir/cs/STGCN_parts_noaug
+data_path: /media/ssd_storage/NTURGB+D/nturgb+d_skeletons
+missing_txt: /media/ssd_storage/NTURGB+D/samples_with_missing_skeletons.txt
+
+# Data Loader
+loader: NTULoader
+train_loader_args:
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cs
+  signals:
+    temporal_signal: True
+    spatial_signal: True
+    all_signal: False
+  #transforms: ['RandomAffineTransformAcrossTime']
+  #transform_args:
+  #  angle_choices: [-10., -5., 0, 5., 10.]
+  #  scale_choices: [0.9, 1.0, 1.1]
+  #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
+  #  tsmoothness_choices: [1]
+test_loader_args:
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cs
+  is_training: False
+  signals:
+    temporal_signal: True
+    spatial_signal: True
+    all_signal: False
+
+# Model
+model: ST_GCONV_RESNET
+model_args:
+  layers_config: [[64, 64, 1], [64, 64, 1], [64, 64, 1], [64, 128, 2], [128, 128, 1], 
+      [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
+  num_class: 60
+  channel: 15
+  window_size: 300
+  num_joints: 25
+  num_actors: 2
+  graph: NTUGraph
+  graph_args:
+    labeling_mode: 'parts'
+  mask_learning: True
+  use_data_bn: True
+
+# Optimization
+weight_decay: 0.0005
+base_lr: 0.1
+step: [20, 50, 70]
+
+# Training
+device: [0]
+batch_size: 64
+test_batch_size: 64
+num_epoch: 80
+nesterov: True
+save_interval: 5
+
+# Evaluation
+phase: test
+eval_interval: 5
+
+# Initialization from checkpoint
+# start_epoch: 5
+weights: ./pretrained_weights/crosssubject_weights.pth

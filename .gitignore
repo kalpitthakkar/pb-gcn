@@ -1,4 +1,5 @@
 # User defined
+*.pth
 run*.sh
 runs/
 .ipynb_checkpoints

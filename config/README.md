@@ -28,8 +28,6 @@ test_loader_args:
 model: <model_name_as_exposed_by_imports>
 model_args:
   layers_config: <list_of_shapes>
-  				 # [[64, 64, 1], [64, 64, 1], [64, 64, 1], [64, 128, 2], [128, 128, 1], 
-      [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
   num_class: <num_action_classes>
   channel: <number_of_input_feature_channels>
   window_size: <max_num_frames>
@@ -130,5 +128,22 @@ eval_interval: 5
 # weights: /media/data_cifs/Kalpit/NTURGB+D/work_dir/cs/STGCN_parts_noaug/epoch65_model.pt
 ```
 
-If there are any questions, please create an issue and we can take it up
-there!
+* If the number of GPUs you use is less than 4, please change the list in
+the argument "device". Depending on the number of GPUs you have and the
+memory they have, you might have to change the batch sizes as well.
+
+* The signals used in the config shown above is temporal (displacement) as
+well as spatial (relative coordinates). Hence, the number of input channels
+is 15. Refer the paper to understand what these signals are.
+
+* If you want to introduce new signals, add the script that calculates the
+new feature in the folder `data/signals`. If you use it, change the number
+of input channels. If you remove any signal (by setting it to `False`),
+reduce the number of input channels.
+
+* The different ways of constructing the adjacency matrices (labeling mode)
+are given in `pb-gcn/models/graph/graph.py`. Change this file / add to this
+file for any new way of labeling the nodes.
+
+That's all. If there are any questions, please create an issue and we can
+take it up there!

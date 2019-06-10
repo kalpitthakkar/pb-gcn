@@ -1,5 +1,5 @@
 # User defined
-*.sh
+run*.sh
 runs/
 .ipynb_checkpoints
 

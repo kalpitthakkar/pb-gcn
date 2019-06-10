@@ -20,7 +20,7 @@ max_frame = 300
 def gendata(data_path,
             out_path,
             ignored_sample_path=None,
-            benchmark='xview',
+            benchmark='cv',
             part='val'):
     if ignored_sample_path != None:
         with open(ignored_sample_path, 'r') as f:
@@ -41,9 +41,9 @@ def gendata(data_path,
         camera_id = int(
             filename[filename.find('C') + 1:filename.find('C') + 4])
 
-        if benchmark == 'xview':
+        if benchmark == 'cv':
             istraining = (camera_id in training_cameras)
-        elif benchmark == 'xsub':
+        elif benchmark == 'cs':
             istraining = (subject_id in training_subjects)
         else:
             raise ValueError()
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         default='/media/ssd_storage/NTURGB+D/samples_with_missing_skeletons.txt')
     parser.add_argument('--out_folder', default='data/NTURGB+D')
 
-    benchmark = ['xsub', 'xview']
+    benchmark = ['cs', 'cv']
     part = ['train', 'val']
     arg = parser.parse_args()
 

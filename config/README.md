@@ -64,7 +64,7 @@ eval_interval: <epochs_between_evaluating_model>
 
 The meanings of each of the arguments are self-explanatory or are explained
 through the brief descriptions given. The configuration used for training
-the models given is:
+the model on cross-subject split on NTURGBD given is:
 
 ```
 work_dir: /media/data_cifs/Kalpit/NTURGB+D/work_dir/cs/STGCN_parts_noaug

@@ -37,6 +37,8 @@ bash download_checkpoints.sh <path_to_download_directory>
 python run.py --config <path_to_YAML_config_file>
 ```
 
+## Citation
+
 For citing our paper:
 
 ```

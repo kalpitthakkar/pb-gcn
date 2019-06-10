@@ -1,9 +1,11 @@
-work_dir: /media/data_cifs/Kalpit/NTURGB+D/work_dir/xview/ST_GCN_parts_noaug
+work_dir: /media/data_cifs/Kalpit/NTURGB+D/work_dir/cv/STGCN_parts_noaug
+data_path: /media/ssd_storage/NTURGB+D/nturgb+d_skeletons
+missing_txt: /media/ssd_storage/NTURGB+D/samples_with_missing_skeletons.txt
 
-# loader
+# Data Loader
 loader: NTULoader
 train_loader_args:
-  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/xview
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cv
   signals:
     temporal_signal: True
     spatial_signal: True
@@ -15,14 +17,14 @@ train_loader_args:
   #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
   #  tsmoothness_choices: [1]
 test_loader_args:
-  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/xview
+  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cv
   is_training: False
   signals:
     temporal_signal: True
     spatial_signal: True
     all_signal: False
 
-# model
+# Model
 model: ST_GCONV_RESNET
 model_args:
   layers_config: [[64, 64, 1], [64, 64, 1], [64, 64, 1], [64, 128, 2], [128, 128, 1], 
@@ -38,12 +40,12 @@ model_args:
   mask_learning: True
   use_data_bn: True
 
-# optim
+# Optimization
 weight_decay: 0.0005
 base_lr: 0.1
 step: [20, 50, 70]
 
-# training
+# Training
 device: [0,1,2,3]
 batch_size: 64
 test_batch_size: 64
@@ -51,9 +53,9 @@ num_epoch: 80
 nesterov: True
 save_interval: 5
 
-# eval
+# Evaluation
 eval_interval: 5
 
-# initialize
+# Initialization from checkpoint
 # start_epoch: 5
-# weights: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/NTURGBD/xsub/ST_GCN_oldlabel_combined_signals/epoch50_model.pt
+# weights: /media/data_cifs/Kalpit/NTURGB+D/work_dir/cv/STGCN_parts_noaug/epoch75_model.pt

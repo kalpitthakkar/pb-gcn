@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from __future__ import print_function
 import os, glob
 import time
@@ -357,5 +355,5 @@ if __name__ == '__main__':
             )
 
         # Launch the training process
-        # launcher = Runner(args)
-        # launcher.run()
+        launcher = Runner(args)
+        launcher.run()

@@ -4,18 +4,6 @@ missing_txt: /media/ssd_storage/NTURGB+D/samples_with_missing_skeletons.txt
 
 # Data Loader
 loader: NTULoader
-train_loader_args:
-  split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cs
-  signals:
-    temporal_signal: True
-    spatial_signal: True
-    all_signal: False
-  #transforms: ['RandomAffineTransformAcrossTime']
-  #transform_args:
-  #  angle_choices: [-10., -5., 0, 5., 10.]
-  #  scale_choices: [0.9, 1.0, 1.1]
-  #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
-  #  tsmoothness_choices: [1]
 test_loader_args:
   split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cs
   is_training: False
@@ -40,23 +28,12 @@ model_args:
   mask_learning: True
   use_data_bn: True
 
-# Optimization
-weight_decay: 0.0005
-base_lr: 0.1
-step: [20, 50, 70]
-
 # Training
 device: [0]
-batch_size: 64
 test_batch_size: 64
-num_epoch: 80
-nesterov: True
-save_interval: 5
 
 # Evaluation
 phase: test
-eval_interval: 5
 
 # Initialization from checkpoint
-# start_epoch: 5
-weights: ./pretrained_weights/crosssubject_weights.pth
+# weights: ./pretrained_weights/crosssubject_weights.pth

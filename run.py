@@ -49,10 +49,11 @@ class Runner(object):
 
     def load_data(self):
         if 'NTU' in self.args.dataset:
-            self.train_dataset = getattr(data, self.args.loader)(**self.args.train_loader_args)
-            self.train_loader = DataLoader(self.train_dataset,
-                batch_size=self.args.batch_size, shuffle=True,
-                num_workers=self.args.num_workers, pin_memory=True)
+            if self.args.phase == 'train':
+                self.train_dataset = getattr(data, self.args.loader)(**self.args.train_loader_args)
+                self.train_loader = DataLoader(self.train_dataset,
+                    batch_size=self.args.batch_size, shuffle=True,
+                    num_workers=self.args.num_workers, pin_memory=True)
             self.test_dataset = getattr(data, self.args.loader)(**self.args.test_loader_args)
             self.test_loader = DataLoader(self.test_dataset,
                 batch_size=self.args.batch_size, shuffle=False,
@@ -317,24 +318,25 @@ if __name__ == '__main__':
             launcher = Runner(args)
             launcher.run()
     elif 'NTU' in args.dataset:
-        # Prepare training data if it is not already present
-        train_data_check = glob.glob(os.path.join(
-            args.train_loader_args['split_dir'],
-            'train_*')
-        )
-        print(train_data_check)
-        if not (len(train_data_check) == 2):
-            topdir, benchmark = os.path.split(args.train_loader_args['split_dir'])
-            part = 'train'
-            if not os.path.exists(args.train_loader_args['split_dir']):
-                os.makedirs(args.train_loader_args['split_dir'])
-            ntu_gendata(
-                args.data_path,
+        if args.phase == 'train':
+            # Prepare training data if it is not already present
+            train_data_check = glob.glob(os.path.join(
                 args.train_loader_args['split_dir'],
-                args.missing_txt,
-                benchmark=benchmark,
-                part=part
+                'train_*')
             )
+            print(train_data_check)
+            if not (len(train_data_check) == 2):
+                topdir, benchmark = os.path.split(args.train_loader_args['split_dir'])
+                part = 'train'
+                if not os.path.exists(args.train_loader_args['split_dir']):
+                    os.makedirs(args.train_loader_args['split_dir'])
+                ntu_gendata(
+                    args.data_path,
+                    args.train_loader_args['split_dir'],
+                    args.missing_txt,
+                    benchmark=benchmark,
+                    part=part
+                )
 
         # Prepare testing data if it is not already present
         test_data_check = glob.glob(os.path.join(

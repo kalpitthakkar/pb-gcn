@@ -10,12 +10,6 @@ train_loader_args:
     temporal_signal: True
     spatial_signal: True
     all_signal: False
-  #transforms: ['RandomAffineTransformAcrossTime']
-  #transform_args:
-  #  angle_choices: [-10., -5., 0, 5., 10.]
-  #  scale_choices: [0.9, 1.0, 1.1]
-  #  translate_choices: [-0.2, -0.1, 0.0, 0.1, 0.2]
-  #  tsmoothness_choices: [1]
 test_loader_args:
   split_dir: /media/data_cifs/Kalpit/NTURGB+D/data/NTURGB+D/cs
   is_training: False

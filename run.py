@@ -16,6 +16,7 @@ from tensorboardX import SummaryWriter
 
 from utils import Parser, Timer
 from utils.nturgbd import gendata as ntu_gendata
+from utils.hdm05 import gendata as hdm_gendata
 import data
 import models
 
@@ -314,6 +315,21 @@ if __name__ == '__main__':
     p.dump_args(args, args.work_dir)
 
     if 'HDM' in args.dataset:
+        # Prepare the data if not already present
+        # No splits => prepared at runtime
+        data_check = glob.glob(os.path.join(
+            args.train_loader_args['split_dir'],
+            'full_*')
+        )
+        print(data_check)
+        if not (len(data_check) == 2):
+            if not os.path.exists(args.train_loader_args['split_dir']):
+                os.makedirs(args.train_loader_args['split_dir'])
+            hdm_gendata(
+                args.data_path,
+                args.train_loader_args['split_dir']
+            )
+        # Run the 10-fold cross-validation on HDM05
         for i in range(10):
             launcher = Runner(args)
             launcher.run()

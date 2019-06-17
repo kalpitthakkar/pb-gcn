@@ -7,7 +7,7 @@ import argparse
 from numpy.lib.format import open_memmap
 from tqdm import tqdm
 
-from read_skeleton import read_xyz
+from .read_skeleton import read_xyz
 
 max_body = 1
 num_joint = 31

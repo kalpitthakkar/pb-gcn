@@ -47,6 +47,7 @@ class Runner(object):
         self.load_data()
         self.load_model()
         self.load_optimizer()
+        self.best_valid = []
 
     def load_data(self):
         if 'NTU' in self.args.dataset:
@@ -257,6 +258,8 @@ class Runner(object):
                 self.summary_writer.add_scalar('Test/AvgTop'+str(k), hit_val, epoch)
                 self.print_log('\tTop{}: {:.2f}%'.format(
                     k, 100 * hit_val))
+                if k == 1:
+                    self.best_valid.append((np.mean(loss_value), 100*hit_val))
 
             if save_score:
                 with open('{}/epoch{}_{}_score.pkl'.format(
@@ -330,9 +333,17 @@ if __name__ == '__main__':
                 args.train_loader_args['split_dir']
             )
         # Run the 10-fold cross-validation on HDM05
+        cv_acc = 0.
         for i in range(10):
             launcher = Runner(args)
             launcher.run()
+            best_valid_loss = sorted(self.best_valid, key=lambda x: x[0])
+            best_valid_acc = sorted(self.best_valid, key=lambda x: -x[1])
+            print("Lowest loss value (accuracy): {} ({})".format(best_valid_loss[0][0], best_valid_loss[0][1]))
+            print("Highest accuracy value (loss): {} ({})".format(best_valid_acc[0][1], best_valid_acc[0][0]))
+            cv_acc += best_valid_acc[0][1]
+        print("Final CV accuracy: {}".format(cv_acc / 10.))
+
     elif 'NTU' in args.dataset:
         if args.phase == 'train':
             # Prepare training data if it is not already present
@@ -376,3 +387,7 @@ if __name__ == '__main__':
         # Launch the training process
         launcher = Runner(args)
         launcher.run()
+        best_valid_loss = sorted(self.best_valid, key=lambda x: x[0])
+        best_valid_acc = sorted(self.best_valid, key=lambda x: -x[1])
+        print("Lowest loss value (accuracy): {} ({})".format(best_valid_loss[0][0], best_valid_loss[0][1]))
+        print("Highest accuracy value (loss): {} ({})".format(best_valid_acc[0][1], best_valid_acc[0][0]))

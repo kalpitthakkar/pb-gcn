@@ -1,17 +1,19 @@
-work_dir: /media/ssd_storage/HDM05/work_dir/STGCN_parts_noaug_xvalid
+work_dir: /media/data_cifs/Kalpit/HDM05/work_dir/STGCN_parts_noaug_xvalid
+data_path: /media/data_cifs/Kalpit/HDM05/hdm05_mats
+missing_txt: ''
 
 # loader
 loader: HDM05Loader
 dataset: HDM
 train_loader_args:
-  split_dir: /media/ssd_storage/HDM05/data/HDM05
+  split_dir: /media/data_cifs/Kalpit/HDM05/data/HDM05
   split_name: 10csam
   signals:
     temporal_signal: True
     spatial_signal: True
     all_signal: False
 test_loader_args:
-  split_dir: /media/ssd_storage/HDM05/data/HDM05
+  split_dir: /media/data_cifs/Kalpit/HDM05/data/HDM05
   split_name: 10csam
   is_training: False
   signals:
@@ -35,7 +37,7 @@ model_args:
   use_data_bn: True
 
 # optim
-weight_decay: 0.0005
+weight_decay: 0.0001
 base_lr: 0.1
 step: [80]
 

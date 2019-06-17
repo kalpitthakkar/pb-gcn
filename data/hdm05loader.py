@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from torch.utils.data.dataset import Dataset
 
 import utils
-import signals
+from . import signals
 
 def split_augment_data(data):
     validFrames = (sample != 0).sum(axis=3).sum(axis=2).sum(axis=0) > 0
@@ -53,7 +53,7 @@ class HDM05Loader(Dataset):
     """
     def __init__(self,
                  split_dir,
-                 split_name='xsub',
+                 split_name='csub',       # or 10csam
                  transforms=None,
                  transform_args=dict(),
                  is_training=True,
@@ -102,7 +102,7 @@ class HDM05Loader(Dataset):
         except Exception as e:
             print("Error in loading the .npy file: ", e)
 
-        if split_name == '10xsam':
+        if split_name == '10csam':
             # Perform the random sample split. Half from each class for training and
             # rest half from each class for testing.
             # Set the random state when creating test loader to be consistent with train.
@@ -119,8 +119,8 @@ class HDM05Loader(Dataset):
                 class_idx = np.where(np.isin(self.labels, i))
                 num_idx = len(class_idx[0])
                 add = num_idx % 2
-                train_idx.extend(class_idx[0][:num_idx/2+add])
-                test_idx.extend(class_idx[0][num_idx/2+add:])
+                train_idx.extend(class_idx[0][:num_idx//2+add])
+                test_idx.extend(class_idx[0][num_idx//2+add:])
 
             if is_training:
                 train_idx = np.asarray(train_idx)
@@ -169,27 +169,19 @@ class HDM05Loader(Dataset):
                 transform_args['sample'] = sample
 
         if self.all_signal:
-            #orient_disps = getattr(signals, 'orientedDisplacements')(sample=sample)
             disps = getattr(signals, 'displacementVectors')(sample=sample)
             rel_coords = getattr(signals, 'relativeCoordinates')(sample=sample)
-            #rel_angles = getattr(signals, 'relativeAngularCoordinates')(sample=sample)
             sample = np.concatenate([sample, disps, rel_coords], axis=0)
         elif self.temporal_signal and self.spatial_signal:
-            #orient_disps = getattr(signals, 'orientedDisplacements')(sample=sample)
             disps = getattr(signals, 'displacementVectors')(sample=sample)
             rel_coords = getattr(signals, 'relativeCoordinates')(sample=sample, references=(19, 26, 2, 7))
-            #rel_angles = getattr(signals, 'relativeAngularCoordinates')(sample=sample)
             sample = np.concatenate([disps, rel_coords], axis=0)
         elif self.temporal_signal:
-            orient_disps = getattr(signals, 'orientedDisplacements')(sample=sample)
-            #disps = getattr(signals, 'displacementVectors')(sample=sample)
-            sample = orient_disps
-            #sample = np.concatenate([disps, orient_disps], axis=0)
+            disps = getattr(signals, 'displacementVectors')(sample=sample)
+            sample = disps
         elif self.spatial_signal:
-            #rel_coords = getattr(signals, 'relativeCoordinates')(sample=sample)
-            rel_angles = getattr(signals, 'relativeAngularCoordinates')(sample=sample)
-            sample = rel_angles
-            #sample = np.concatenate([rel_coords, rel_angles], axis=0)
+            rel_coords = getattr(signals, 'relativeCoordinates')(sample=sample)
+            sample = rel_coords
 
         #sample = split_augment_data(sample)
         #label = np.asarray([label] * 8)

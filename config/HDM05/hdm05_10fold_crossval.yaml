@@ -1,0 +1,58 @@
+work_dir: /media/data_cifs/Kalpit/HDM05/work_dir/STGCN_parts_noaug_xvalid
+data_path: /media/data_cifs/Kalpit/HDM05/hdm05_mats
+missing_txt: ''
+
+# loader
+loader: HDM05Loader
+dataset: HDM
+train_loader_args:
+  split_dir: /media/data_cifs/Kalpit/HDM05/data/HDM05
+  split_name: 10csam
+  signals:
+    temporal_signal: True
+    spatial_signal: True
+    all_signal: False
+test_loader_args:
+  split_dir: /media/data_cifs/Kalpit/HDM05/data/HDM05
+  split_name: 10csam
+  is_training: False
+  signals:
+    temporal_signal: True
+    spatial_signal: True
+    all_signal: False
+
+# model
+model: ST_GCONV_RESNET
+model_args:
+  layers_config: [[64, 64, 1], [64, 64, 1], [64, 64, 1], [64, 128, 2], [128, 128, 1], [128, 128, 1], [128, 256, 2], [256, 256, 1], [256, 256, 1]]
+  num_class: 130
+  channel: 15
+  window_size: 901
+  num_joints: 31
+  num_actors: 1
+  graph: HDM05Graph
+  graph_args:
+    labeling_mode: 'parts'
+  mask_learning: True
+  use_data_bn: True
+
+# optim
+weight_decay: 0.0001
+base_lr: 0.1
+step: [80]
+
+# training
+device: [0,1,2,3]
+batch_size: 32
+test_batch_size: 32
+num_epoch: 120
+nesterov: True
+save_interval: 5
+log_interval: 10
+
+# eval
+eval_interval: 5
+
+# initialize
+# start_epoch: 50
+# weights: /ssd_scratch/cvit/kalpit.t/stgcn/work_dir/NTURGBD/xsub/ST_GCN_oldlabel_combined_signals/epoch50_model.pt

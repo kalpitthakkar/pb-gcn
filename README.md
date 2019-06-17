@@ -5,7 +5,12 @@ Official repository for the code from BMVC (British Machine Vision Conference) p
 - [x] Code for the final model used in the paper.
 - [x] Model checkpoints for model trained on NTURGB+D Cross Subject and Cross View data splits.
 - [x] Training and testing config as well as data preparation scripts for NTURGB+D dataset.
-- [ ] Training and testing config as well as data preparation scripts for HDM05 dataset.
+- [x] Training config as well as data preparation scripts for HDM05 dataset.
+
+TODOs:
+
+- [ ] Code for visualizing results.
+- [ ] Document how to extend the code for other projects.
 
 ## Getting Started
 
